@@ -40,7 +40,7 @@
         const addBtn = document.getElementById("addParaBtn");
         const removeBtn = document.getElementById("removeParaBtn");
 
-        // Add Paragraph
+        
         addBtn.addEventListener("click", function () {
 
             // Create a new paragraph element
