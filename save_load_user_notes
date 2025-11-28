@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L0 - Save and Load User Notes</title>
+    <style>
+        /* Basic Reset and Layout */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Container Card Styling */
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Text Area Styling */
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            box-sizing: border-box; /* Ensures padding doesn't widen the element */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical; /* Allows user to resize height only */
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        /* Button Group Styling */
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* Specific Button Colors */
+        #save-btn { background-color: #28a745; color: white; }
+        #load-btn { background-color: #007bff; color: white; }
+        #clear-btn { background-color: #dc3545; color: white; }
+
+        /* Status Message */
+        #status-msg {
+            margin-top: 15px;
+            font-size: 0.9em;
+            height: 20px; /* Prevents layout jump */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>My Notepad</h2>
+        
+        <textarea id="note-area" placeholder="Write your notes here..."></textarea>
+        
+        <div class="btn-group">
+            <button id="save-btn">Save</button>
+            <button id="load-btn">Load</button>
+            <button id="clear-btn">Clear</button>
+        </div>
+
+        <div id="status-msg"></div>
+    </div>
+
+    <script>
+        // 1. Select DOM elements
+        const noteArea = document.getElementById('note-area');
+        const saveBtn = document.getElementById('save-btn');
+        const loadBtn = document.getElementById('load-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const statusMsg = document.getElementById('status-msg');
+
+        // KEY NAME for localStorage
+        const STORAGE_KEY = 'user_saved_note';
+
+        // 2. HELPER: Function to show status messages
+        function showMessage(msg, color) {
+            statusMsg.textContent = msg;
+            statusMsg.style.color = color;
+            // Clear message after 2 seconds
+            setTimeout(() => {
+                statusMsg.textContent = '';
+            }, 2000);
+        }
+
+        // 3. FEATURE: Auto-load notes on page load (Requirement 1)
+        window.addEventListener('load', () => {
+            const savedNote = localStorage.getItem(STORAGE_KEY);
+            if (savedNote) {
+                noteArea.value = savedNote;
+                console.log('Notes loaded automatically.');
+            }
+        });
+
+        // 4. FEATURE: Save Notes
+        saveBtn.addEventListener('click', () => {
+            const text = noteArea.value;
+
+            // Validation: Ensure no empty notes are saved (Requirement 2)
+            if (text.trim() === "") {
+                showMessage("Cannot save empty note!", "red");
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem(STORAGE_KEY, text);
+            showMessage("Note saved successfully!", "green");
+        });
+
+        // 5. FEATURE: Load Notes (Manual Button)
+        loadBtn.addEventListener('click', () => {
+            const savedNote = localStorage.getItem(STORAGE_KEY);
+            
+            if (savedNote) {
+                noteArea.value = savedNote;
+                showMessage("Notes loaded!", "blue");
+            } else {
+                showMessage("No saved notes found.", "orange");
+            }
+        });
+
+        // 6. FEATURE: Clear Notes
+        clearBtn.addEventListener('click', () => {
+            // Remove from storage
+            localStorage.removeItem(STORAGE_KEY);
+            
+            // Clear the text area
+            noteArea.value = "";
+            showMessage("Notes cleared!", "red");
+        });
+    </script>
+</body>
+</html>
