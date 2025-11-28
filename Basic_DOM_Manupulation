@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L0 - Basic DOM Manipulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        
+        ul {
+            list-style-type: decimal; /* Helps visualize the sequence number */
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dynamic List Item Styler</h1>
+
+    <!-- 1. A <ul> with three <li> items -->
+    <ul id="item-list">
+        <li>Existing Item 1</li>
+        <li>Existing Item 2</li>
+        <li>Existing Item 3</li>
+    </ul>
+
+    <!-- 2. A <button> with the text "Add Item" -->
+    <button id="add-btn">Add Item</button>
+
+    <script>
+        // Select the necessary elements
+        const list = document.querySelector('#item-list');
+        const button = document.querySelector('#add-btn');
+
+        // Add event listener for the click event
+        button.addEventListener('click', function() {
+            // 1. Create a new <li> element
+            const newItem = document.createElement('li');
+            newItem.textContent = "New Item";
+
+            // 2. Determine the sequence number
+            // The new item will be at index (current length + 1)
+            const sequenceNumber = list.children.length + 1;
+
+            // 3. Apply Styling based on Odd/Even sequence
+            if (sequenceNumber % 2 !== 0) {
+                // Odd: Bold font & Blue color
+                newItem.style.fontWeight = "bold";
+                newItem.style.color = "blue";
+            } else {
+                // Even: Italic font & Red color
+                newItem.style.fontStyle = "italic";
+                newItem.style.color = "red";
+            }
+
+            // Append the new item to the list
+            list.appendChild(newItem);
+        });
+    </script>
+</body>
+</html>

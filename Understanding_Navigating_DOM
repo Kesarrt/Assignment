@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L0 - DOM Navigation</title>
+    <style>
+        /* Basic styling to make the changes obvious */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. The H1 Element with an ID -->
+    <h1 id="main-heading">Original Title</h1>
+
+    <!-- 2. The Container Div -->
+    <div class="container">
+        <h3>Article Section</h3>
+        
+        <!-- 3. Multiple Paragraph Elements -->
+        <p>This is the first paragraph. It should turn blue.</p>
+        <p>This is the second paragraph. It should also turn blue.</p>
+        <p>This is the third paragraph. JavaScript is selecting all of us!</p>
+    </div>
+
+    <script>
+        // --- TASK 1 ---
+        // Select the <h1> element by its id and change its text content.
+        const heading = document.getElementById('main-heading');
+        heading.textContent = "Welcome to the DOM World!";
+
+
+        // --- TASK 2 ---
+        // Select all <p> elements using getElementsByTagName and set their text color to blue.
+        const paragraphs = document.getElementsByTagName('p');
+        
+        // Note: getElementsByTagName returns an HTMLCollection, not an array.
+        // We cannot use .forEach() directly, so we use a standard 'for' loop.
+        for (let i = 0; i < paragraphs.length; i++) {
+            paragraphs[i].style.color = "blue";
+        }
+
+
+        // --- TASK 3 ---
+        // Use querySelector to select the first <div> with the class container and change its background color.
+        const containerDiv = document.querySelector('.container');
+        containerDiv.style.backgroundColor = "yellow";
+    </script>
+</body>
+</html>

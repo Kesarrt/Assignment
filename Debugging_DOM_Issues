@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debugging Task</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+          line-height: 1.6;
+      }
+      button {
+          padding: 8px 16px;
+          cursor: pointer;
+          margin-top: 10px;
+      }
+      #box {
+          margin-top: 20px;
+          margin-bottom: 10px;
+          border: 1px solid #333;
+      }
+  </style>
+</head>
+<body>
+  <h1>Debugging Challenge</h1>
+
+  <!-- Elements to interact with -->
+  <p id="message">Original Message</p>
+  <button id="textButton">Change Text</button>
+  
+  <br><br>
+  
+  <div id="box" style="width: 100px; height: 100px; background-color: lightgray;"></div>
+  <button id="colorButton">Change Background</button>
+
+  <script>
+    // --- BUG FIX 1: Incorrect ID Selector ---
+    // Old: document.querySelector('#massage') -> The HTML id is 'message'
+    const para = document.querySelector('#message'); 
+
+    // --- BUG FIX 2: Incorrect Selection Method ---
+    // Old: document.getElementByName('textButton') -> getElementByName isn't a standard method for ID selection
+    // Note: getElementsByName returns a NodeList, but here we want the specific element by ID.
+    const textButton = document.getElementById('textButton'); 
+
+    // --- BUG FIX 3: Incorrect Event Listener Method ---
+    // Old: textButton.addClickEventListener -> This method does not exist.
+    textButton.addEventListener('click', () => { 
+      // --- BUG FIX 4: Incorrect Property ---
+      // Old: para.contentText -> The standard property is textContent (or innerText/innerHTML)
+      para.textContent = 'New Message'; 
+    });
+
+    const box = document.getElementById('box');
+    const colorButton = document.getElementById('colorButton');
+
+    colorButton.addEventListener('click', () => {
+      // --- BUG FIX 5: Typo in 'style' property ---
+      // Old: box.styl.backgroundColor -> Should be 'style'
+      box.style.backgroundColor = 'blue'; 
+    });
+  </script>
+</body>
+</html>
