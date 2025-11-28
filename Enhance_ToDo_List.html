@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L1 - Enhanced Todo List</title>
+    <style>
+        /* CSS Styling */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .app-container {
+            background: white;
+            width: 400px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 { text-align: center; color: #333; }
+
+        /* Inputs */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #add-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #add-btn:hover { background-color: #5b4bc4; }
+
+        /* List Styling */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        li:hover { background-color: #fafafa; }
+
+        /* Task Text & Completed State */
+        .task-text {
+            cursor: pointer;
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+            opacity: 0.6;
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            background-color: #ff7675;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .delete-btn:hover { background-color: #d63031; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h2>My Todo List</h2>
+
+        <input type="text" id="search-bar" placeholder="🔍 Search tasks...">
+
+        <input type="text" id="todo-input" placeholder="Add a new task...">
+        <button id="add-btn">Add Task</button>
+
+        <ul id="todo-list"></ul>
+    </div>
+
+    <script>
+        // --- 1. State Management ---
+        // We load from localStorage OR start with an empty array
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        // DOM Elements
+        const todoInput = document.getElementById('todo-input');
+        const addBtn = document.getElementById('add-btn');
+        const todoList = document.getElementById('todo-list');
+        const searchBar = document.getElementById('search-bar');
+
+        // --- 2. Core Functions ---
+
+        // SAVE: Helper to save current state to localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+
+        // RENDER: Displays the list (accepts a specific array to support search)
+        function renderTodos(listToRender) {
+            todoList.innerHTML = ""; // Clear current list
+
+            listToRender.forEach(task => {
+                // Create List Item
+                const li = document.createElement('li');
+
+                // Create Span for Text
+                const span = document.createElement('span');
+                span.textContent = task.text;
+                span.className = "task-text";
+                if (task.isCompleted) {
+                    span.classList.add("completed");
+                }
+
+                // TOGGLE Event: Click text to mark complete
+                span.addEventListener('click', () => toggleTask(task.id));
+
+                // Create Delete Button
+                const delBtn = document.createElement('button');
+                delBtn.textContent = "Delete";
+                delBtn.className = "delete-btn";
+                
+                // DELETE Event: Click button to remove
+                delBtn.addEventListener('click', () => deleteTask(task.id));
+
+                // Assemble and Append
+                li.appendChild(span);
+                li.appendChild(delBtn);
+                todoList.appendChild(li);
+            });
+        }
+
+        // ADD: Creates a new object
+        function addTask() {
+            const text = todoInput.value.trim();
+            if (text === "") return alert("Please enter a task!");
+
+            const newTask = {
+                id: Date.now(), // Unique ID based on timestamp
+                text: text,
+                isCompleted: false
+            };
+
+            todos.push(newTask);
+            saveToLocalStorage();
+            renderTodos(todos); // Re-render full list
+            todoInput.value = ""; // Clear input
+        }
+
+        // TOGGLE: Flip boolean status
+        function toggleTask(id) {
+            // Find the task in the array and flip its status
+            todos = todos.map(task => {
+                if (task.id === id) {
+                    return { ...task, isCompleted: !task.isCompleted };
+                }
+                return task;
+            });
+            saveToLocalStorage();
+            // Re-render based on current search term (to keep search view active)
+            handleSearch(); 
+        }
+
+        // DELETE: Filter out the specific ID
+        function deleteTask(id) {
+            todos = todos.filter(task => task.id !== id);
+            saveToLocalStorage();
+            handleSearch(); // Re-render preserving search
+        }
+
+        // SEARCH: Filter logic
+        function handleSearch() {
+            const query = searchBar.value.toLowerCase();
+            
+            const filteredTasks = todos.filter(task => 
+                task.text.toLowerCase().includes(query)
+            );
+            
+            renderTodos(filteredTasks);
+        }
+
+        // --- 3. Event Listeners ---
+        addBtn.addEventListener('click', addTask);
+        
+        searchBar.addEventListener('input', handleSearch);
+
+        // Initial Render on Page Load
+        renderTodos(todos);
+
+    </script>
+</body>
+</html>
